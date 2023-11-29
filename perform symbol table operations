@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SIZE 10
+
+// Structure to represent a symbol
+typedef struct Symbol {
+    char name[20];
+    int value;
+    // Add other relevant information as needed
+    // For example, data type, scope, etc.
+} Symbol;
+
+// Node for the linked list to handle collisions in the hash table
+typedef struct Node {
+    Symbol symbol;
+    struct Node* next;
+} Node;
+
+// Hash table to store symbols
+Node* symbolTable[SIZE];
+
+// Hash function
+int hashFunction(char *name) {
+    int sum = 0;
+    for (int i = 0; name[i] != '\0'; i++) {
+        sum += name[i];
+    }
+    return sum % SIZE;
+}
+
+// Function to insert a symbol into the symbol table
+void insertSymbol(char *name, int value) {
+    int index = hashFunction(name);
+
+    // Create a new symbol
+    Symbol newSymbol;
+    strcpy(newSymbol.name, name);
+    newSymbol.value = value;
+
+    // Create a new node for the linked list
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->symbol = newSymbol;
+    newNode->next = NULL;
+
+    // If the slot is empty
+    if (symbolTable[index] == NULL) {
+        symbolTable[index] = newNode;
+    } else {
+        // If there's a collision, add to the linked list
+        Node* current = symbolTable[index];
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+}
+
+// Function to search for a symbol in the symbol table
+Symbol* searchSymbol(char *name) {
+    int index = hashFunction(name);
+
+    // Search in the linked list at the hash index
+    Node* current = symbolTable[index];
+    while (current != NULL) {
+        if (strcmp(current->symbol.name, name) == 0) {
+            return &(current->symbol);
+        }
+        current = current->next;
+    }
+
+    return NULL; // Symbol not found
+}
+
+// Function to print all symbols in the symbol table
+void printSymbolTable() {
+    printf("\nSymbol Table:\n");
+    for (int i = 0; i < SIZE; i++) {
+        Node* current = symbolTable[i];
+        while (current != NULL) {
+            printf("%s\t%d\n", current->symbol.name, current->symbol.value);
+            current = current->next;
+        }
+    }
+}
+
+int main() {
+    // Insert some symbols into the symbol table
+    insertSymbol("variable1", 10);
+    insertSymbol("variable2", 20);
+    insertSymbol("variable3", 30);
+    insertSymbol("variable4", 40);
+
+    // Search for a symbol
+    Symbol* foundSymbol = searchSymbol("variable2");
+    if (foundSymbol != NULL) {
+        printf("Symbol found: %s\t%d\n", foundSymbol->name, foundSymbol->value);
+    } else {
+        printf("Symbol not found.\n");
+    }
+
+    // Print the symbol table
+    printSymbolTable();
+
+    return 0;
+}
