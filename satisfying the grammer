@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+// Function to check if the input string has balanced parentheses
+int isBalanced(char *input) {
+    int count = 0;
+
+    while (*input != '\0') {
+        if (*input == '(') {
+            count++;
+        } else if (*input == ')') {
+            count--;
+            if (count < 0) {
+                return 0; // Unbalanced parentheses
+            }
+        }
+
+        input++;
+    }
+
+    return (count == 0); // Return 1 if parentheses are balanced, 0 otherwise
+}
+
+int main() {
+    char input[1000];
+
+    printf("Enter a string with parentheses: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove the newline character at the end of the input
+    input[strcspn(input, "\n")] = '\0';
+
+    if (isBalanced(input)) {
+        printf("The input string satisfies the grammar.\n");
+    } else {
+        printf("The input string does not satisfy the grammar.\n");
+    }
+
+    return 0;
+}
