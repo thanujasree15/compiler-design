@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+// Function prototypes
+int expression(char *input);
+int term(char *input);
+int factor(char *input);
+
+// Function to check if a character is an operator
+int isOperator(char ch) {
+    return (ch == '+' || ch == '-');
+}
+
+// Function to skip whitespace
+char* skipWhitespace(char *input) {
+    while (*input && isspace(*input)) {
+        input++;
+    }
+    return input;
+}
+
+// Recursive Descent Parser functions
+int factor(char *input) {
+    input = skipWhitespace(input);
+
+    if (isdigit(*input)) {
+        return strtol(input, &input, 10);
+    } else if (*input == '(') {
+        input++;
+        int result = expression(input);
+        if (*input == ')') {
+            input++;
+            return result;
+        } else {
+            fprintf(stderr, "Error: Unbalanced parentheses.\n");
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        fprintf(stderr, "Error: Invalid factor.\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+int term(char *input) {
+    int result = factor(input);
+
+    while (*input && isOperator(*input)) {
+        char op = *input;
+        input++;
+        int nextFactor = factor(input);
+
+        if (op == '+') {
+            result += nextFactor;
+        } else {
+            result -= nextFactor;
+        }
+    }
+
+    return result;
+}
+
+int expression(char *input) {
+    int result = term(input);
+
+    while (*input && isOperator(*input)) {
+        char op = *input;
+        input++;
+        int nextTerm = term(input);
+
+        if (op == '+') {
+            result += nextTerm;
+        } else {
+            result -= nextTerm;
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    char input[100];
+
+    printf("Enter an arithmetic expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove the newline character at the end of the input
+    input[strcspn(input, "\n")] = '\0';
+
+    int result = expression(input);
+
+    printf("Result: %
