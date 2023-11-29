@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+// Function to analyze and count whitespaces and newline characters
+void countWhitespaceAndNewline(char *input) {
+    int i = 0;
+    int whitespaceCount = 0;
+    int newlineCount = 0;
+
+    while (input[i] != '\0') {
+        if (input[i] == ' ' || input[i] == '\t') {
+            whitespaceCount++;
+        } else if (input[i] == '\n') {
+            newlineCount++;
+        }
+
+        i++;
+    }
+
+    printf("Number of Whitespaces: %d\n", whitespaceCount);
+    printf("Number of Newline Characters: %d\n", newlineCount);
+}
+
+int main() {
+    char input[1000];
+
+    printf("Enter C code (press Ctrl+D to end input):\n");
+
+    // Read input until EOF (Ctrl+D on UNIX/Linux, Ctrl+Z on Windows)
+    while (fgets(input, sizeof(input), stdin) != NULL) {
+        countWhitespaceAndNewline(input);
+    }
+
+    return 0;
+}
