@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_IDENTIFIER_LENGTH 30
+
+// Function to check if a given string is a keyword
+int isKeyword(char *token) {
+    char keywords[][10] = {"if", "else", "while", "for", "int", "float", "char", "return"};
+    int i;
+
+    for (i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
+        if (strcmp(keywords[i], token) == 0) {
+            return 1; // It's a keyword
+        }
+    }
+
+    return 0; // It's not a keyword
+}
+
+// Function to check if a character is a valid starting character for an identifier
+int isValidStart(char ch) {
+    return (isalpha(ch) || ch == '_');
+}
+
+// Function to check if a character is a valid character for an identifier
+int isValidChar(char ch) {
+    return (isalnum(ch) || ch == '_');
+}
+
+// Function to analyze and test the validity of an identifier
+void analyzeIdentifier(char *input) {
+    char token[MAX_IDENTIFIER_LENGTH];
+    int i = 0;
+
+    // Ignore leading whitespaces
+    while (input[i] == ' ' || input[i] == '\t') {
+        i++;
+    }
+
+    // Check if the identifier starts with a valid character
+    if (isValidStart(input[i])) {
+        int j = 0;
+        while (isValidChar(input[i]) && j < MAX_IDENTIFIER_LENGTH - 1) {
+            token[j++] = input[i++];
+        }
+        token[j] = '\0';
+
+        // Check if the identifier is a keyword
+        if (isKeyword(token)) {
+            printf("Invalid Identifier: %s (It's a keyword)\n", token);
+        } else {
+            printf("Valid Identifier: %s\n", token);
