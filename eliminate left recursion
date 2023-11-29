@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to eliminate left recursion from a production
+void eliminateLeftRecursion(char nonTerminal, char *productions[], int numProductions) {
+    int i;
+    char newProductions[10][20]; // Assuming a maximum of 10 productions and 20 characters each
+
+    printf("\nAfter eliminating left recursion for %c:\n", nonTerminal);
+
+    // Separate productions into those with left recursion and without
+    int withLeftRecursion = 0;
+    int withoutLeftRecursion = 0;
+
+    for (i = 0; i < numProductions; i++) {
+        if (productions[i][0] == nonTerminal) {
+            // Productions with left recursion
+            strcpy(newProductions[withLeftRecursion], &productions[i][1]);
+            withLeftRecursion++;
+        } else {
+            // Productions without left recursion
+            strcpy(newProductions[numProductions - withLeftRecursion + withoutLeftRecursion], productions[i]);
+            withoutLeftRecursion++;
+        }
+    }
+
+    // Print productions without left recursion
+    for (i = 0; i < withoutLeftRecursion; i++) {
+        printf("%c -> %s%s'\n", nonTerminal, newProductions[i], nonTerminal);
+    }
+
+    // Print new production for the non-terminal
+    printf("%c' -> ", nonTerminal);
+    for (i = withoutLeftRecursion; i < withLeftRecursion - 1; i++) {
+        printf("%s%c' | ", newProductions[i], nonTerminal);
+    }
+    printf("%s%c' | epsilon\n", newProductions[i], nonTerminal);
+}
+
+int main() {
+    char nonTerminal;
+    int numProductions;
+
+    printf("Enter the non-terminal with left recursion: ");
+    scanf("%c", &nonTerminal);
+
+    printf("Enter the number of productions: ");
+    scanf("%d", &numProductions);
+
+    char productions[numProductions][20];
+
+    printf("Enter the productions:\n");
+    for (int i = 0
