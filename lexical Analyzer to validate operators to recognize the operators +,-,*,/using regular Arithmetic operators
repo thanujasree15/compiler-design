@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+// Function to check if a character is an arithmetic operator
+int isArithmeticOperator(char ch) {
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
+}
+
+// Function to check if a character is a delimiter (whitespace, tab, newline)
+int isDelimiter(char ch) {
+    return (ch == ' ' || ch == '\t' || ch == '\n');
+}
+
+// Function to analyze and print arithmetic operators
+void analyzeOperators(char *input) {
+    int i = 0;
+
+    while (input[i] != '\0') {
+        // Ignore whitespace, tabs, and newlines
+        if (isDelimiter(input[i])) {
+            i++;
+            continue;
+        }
+
+        // Identify and print arithmetic operators
+        if (isArithmeticOperator(input[i])) {
+            printf("Arithmetic Operator: %c\n", input[i++]);
+        } else {
+            i++;
+        }
+    }
+}
+
+int main() {
+    char input[1000];
+
+    printf("Enter arithmetic expression (press Enter to analyze):\n");
+
+    // Read input until Enter is pressed
+    fgets(input, sizeof(input), stdin);
+
+    analyzeOperators(input);
+
+    return 0;
+}
