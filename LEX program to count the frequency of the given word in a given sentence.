@@ -1,0 +1,29 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+int word_count = 0;
+char target_word[100];
+%}
+
+%%
+[a-zA-Z]+   {
+    if (strcmp(yytext, target_word) == 0) {
+        word_count++;
+    }
+}
+
+. { }
+
+%%
+
+int main(void) {
+    printf("Enter a sentence: ");
+    scanf("%s", target_word);
+
+    yylex();
+
+    printf("Frequency of '%s': %d\n", target_word, word_count);
+
+    return 0;
+}
