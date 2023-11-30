@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure to represent an expression entry in the symbol table
+struct ExpressionEntry {
+    char expression[100];
+    char result;
+    struct ExpressionEntry* next;
+};
+
+// Function declarations
+char getTemp();
+struct ExpressionEntry* lookupExpression(const char* expr);
+void insertExpression(const char* expr, char result);
+
+// Global variables
+struct ExpressionEntry* symbolTable = NULL;
+char nextTemp = 'A';
+
+int main() {
+    char input[100];
+    char optimizedCode[500] = "";  // Assuming the optimized code won't exceed 500 characters
+    printf("Enter the code to optimize (Ctrl+D to end input on Unix/Linux, Ctrl+Z on Windows):\n");
+
+    // Read input until EOF (Ctrl+D on Unix/Linux, Ctrl+Z on Windows)
+    while (fgets(input, sizeof(input), stdin) != NULL) {
+        // Check for common subexpression
+        struct ExpressionEntry* entry = lookupExpression(input);
+
+        if (entry != NULL) {
+            // Common subexpression found, replace with the result
+            strcat(optimizedCode, entry->result);
+        } else {
+            // No common subexpression found, process the line and update the symbol table
+            char temp = getTemp();
+            strcat(optimizedCode, input);
+            insertExpression(input, temp);
+        }
+    }
+
+    // Output the optimized code
+    printf("\nOptimized Code:\n%s", optimizedCode);
+
+    // Free the symbol table
+    struct ExpressionEntry* current = symbolTable;
+    while (current != NULL) {
+        struct ExpressionEntry* temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    return 0;
+}
+
+// Function to get a temporary variable
+char getTemp() {
+    char temp = nextTemp;
+    nextTemp++;
+    return temp;
+}
+
+// Function to lookup an expression in the symbol table
+struct ExpressionEntry* lookupExpression(const char* expr) {
+    struct ExpressionEntry* current = symbolTable;
+
+    while (current != NULL) {
+        if (strcmp(current->expression, expr) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+// Function to insert an expression into the symbol table
+void insertExpression(const char* expr, char result) {
+    struct ExpressionEntry* newEntry = (struct ExpressionEntry*)malloc(sizeof(struct ExpressionEntry));
+    strcpy(newEntry->expression, expr);
+    newEntry->result = result;
+    newEntry->next = symbolTable;
+    symbolTable = newEntry;
+}
