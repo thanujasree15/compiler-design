@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Global variables
+char input[100];
+int position = 0;
+int tempCount = 1;
+
+// Function declarations
+char getTemp();
+void generateThreeAddressCode();
+
+int main() {
+    printf("Enter an arithmetic expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove newline character from input
+    for (int i = 0; i < sizeof(input); i++) {
+        if (input[i] == '\n') {
+            input[i] = '\0';
+            break;
+        }
+    }
+
+    // Begin generating three-address code
+    generateThreeAddressCode();
+
+    return 0;
+}
+
+// Function to get a temporary variable
+char getTemp() {
+    char temp = 'T' + tempCount;
+    tempCount++;
+    return temp;
+}
+
+// Function to generate three-address code
+void generateThreeAddressCode() {
+    char result = getTemp();
+
+    // Parse the expression
+    while (input[position] != '\0') {
+        char op = input[position];
+
+        // Skip whitespace characters
+        if (op == ' ' || op == '\t') {
+            position++;
+            continue;
+        }
+
+        char operand1 = input[position++];
+        char operator = input[position++];
+        char operand2 = input[position++];
+
+        printf("%c = %c %c %c\n", result, operand1, operator, operand2);
+
+        // Update operand1 for the next iteration
+        operand1 = result;
+        result = getTemp();
+    }
+}
