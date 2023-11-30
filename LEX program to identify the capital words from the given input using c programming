@@ -1,0 +1,14 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[A-Z][A-Z0-9_]* { printf("Capital Word: %s\n", yytext); }
+.              { }
+
+%%
+
+int main(void) {
+    yylex();
+    return 0;
+}
