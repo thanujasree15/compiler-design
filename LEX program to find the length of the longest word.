@@ -1,0 +1,25 @@
+%{
+#include <stdio.h>
+
+int max_length = 0;  // Variable to store the length of the longest word
+%}
+
+%%
+[a-zA-Z]+ {
+    int current_length = yyleng;  // Get the length of the current word
+    if (current_length > max_length) {
+        max_length = current_length;  // Update max_length if the current word is longer
+    }
+}
+
+. { }
+
+%%
+
+int main(void) {
+    yylex();
+
+    printf("Length of the longest word: %d\n", max_length);
+
+    return 0;
+}
