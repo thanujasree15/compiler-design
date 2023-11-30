@@ -1,0 +1,19 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]+          { printf("Number: %s\n", yytext); }
+[ \t\n]         { }  /* Ignore whitespaces, tabs, and newlines */
+"+"             { printf("Addition Operator\n"); }
+"-"             { printf("Subtraction Operator\n"); }
+"*"             { printf("Multiplication Operator\n"); }
+"/"             { printf("Division Operator\n"); }
+.               { printf("Invalid Token: %s\n", yytext); }
+
+%%
+
+int main(void) {
+    yylex();
+    return 0;
+}
