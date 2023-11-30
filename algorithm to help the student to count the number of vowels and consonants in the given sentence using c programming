@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+int main() {
+    char sentence[1000];
+    int vowelCount = 0, consonantCount = 0;
+
+    // Step 3: Read the input sentence
+    printf("Enter a sentence: ");
+    fgets(sentence, sizeof(sentence), stdin);
+
+    // Step 4: Convert the entire sentence to lowercase
+    for (int i = 0; sentence[i]; i++) {
+        sentence[i] = tolower(sentence[i]);
+    }
+
+    // Step 5: Check each character in the sentence
+    for (int i = 0; sentence[i]; i++) {
+        // Step 5a: Check if the character is an alphabet
+        if (isalpha(sentence[i])) {
+            // Step 5ai: Check if it is a vowel
+            if (strchr("aeiou", sentence[i]) != NULL) {
+                // Step 5aii: Increment vowelCount
+                vowelCount++;
+            } else {
+                // Step 5aiii: Increment consonantCount
+                consonantCount++;
+            }
+        }
+    }
+
+    // Step 6: Display the counts
+    printf("Number of vowels: %d\n", vowelCount);
+    printf("Number of consonants: %d\n", consonantCount);
+
+    return 0;
+}
