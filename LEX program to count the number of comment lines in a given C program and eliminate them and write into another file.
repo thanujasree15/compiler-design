@@ -1,0 +1,68 @@
+%{
+#include <stdio.h>
+
+int commentLineCount = 0;
+%}
+
+%%
+"/*"                { /* Start of multiline comment */
+                      commentLineCount++;
+                      while (1) {
+                          char c = input();
+                          if (c == EOF) {
+                              fprintf(stderr, "Error: Unterminated comment\n");
+                              break;
+                          } else if (c == '*' && input() == '/') {
+                              break;  /* End of multiline comment */
+                          }
+                      }
+                    }
+
+"//"                { /* Start of single-line comment */
+                      commentLineCount++;
+                      while (1) {
+                          char c = input();
+                          if (c == EOF || c == '\n') {
+                              unput(c);
+                              break;  /* End of single-line comment */
+                          }
+                      }
+                    }
+
+.                  { /* Non-comment character */
+                      ECHO;
+                    }
+
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <input_file.c> <output_file.c>\n", argv[0]);
+        return 1;
+    }
+
+    FILE *inputFile = fopen(argv[1], "r");
+    if (!inputFile) {
+        perror("Error opening input file");
+        return 1;
+    }
+
+    FILE *outputFile = fopen(argv[2], "w");
+    if (!outputFile) {
+        perror("Error opening output file");
+        fclose(inputFile);
+        return 1;
+    }
+
+    yyin = inputFile;
+    yyout = outputFile;
+
+    yylex();
+
+    fclose(inputFile);
+    fclose(outputFile);
+
+    printf("Number of comment lines: %d\n", commentLineCount);
+
+    return 0;
+}
