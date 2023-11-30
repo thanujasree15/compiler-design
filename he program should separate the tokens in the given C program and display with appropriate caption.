@@ -1,0 +1,40 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+"auto"          { printf("Auto Keyword\n"); }
+"break"         { printf("Break Keyword\n"); }
+"case"          { printf("Case Keyword\n"); }
+"char"          { printf("Char Keyword\n"); }
+"const"         { printf("Const Keyword\n"); }
+"continue"      { printf("Continue Keyword\n"); }
+"default"       { printf("Default Keyword\n"); }
+"do"            { printf("Do Keyword\n"); }
+"double"        { printf("Double Keyword\n"); }
+"else"          { printf("Else Keyword\n"); }
+"enum"          { printf("Enum Keyword\n"); }
+"extern"        { printf("Extern Keyword\n"); }
+"float"         { printf("Float Keyword\n"); }
+"for"           { printf("For Keyword\n"); }
+
+
+[0-9]+          { printf("Integer Constant: %s\n", yytext); }
+[0-9]+\.[0-9]+  { printf("Float Constant: %s\n", yytext); }
+\"([^"\\]|\\.)*\"  { printf("String Literal: %s\n", yytext); }
+
+[ \t\n]         { }  /* Ignore whitespaces, tabs, and newlines */
+
+[a-zA-Z_][a-zA-Z0-9_]* { printf("Identifier: %s\n", yytext); }
+
+[;:{}()\[\],.]   { printf("Punctuation: %s\n", yytext); }
+
+.              { printf("Invalid Token: %s\n", yytext); }
+
+%%
+
+int main(void) {
+    yylex();
+    return 0;
+}
