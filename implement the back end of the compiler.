@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+// Function declarations
+void generateCode(char op, char operand1, char operand2, char result);
+char getTemp();
+
+// Global variables
+char nextTemp = 'A';
+
+int main() {
+    // Sample expression: a = b + c * d
+    char operand1 = 'b';
+    char operand2 = 'c';
+    char result = 'a';
+
+    // Generate code for the expression
+    generateCode('+', operand1, operand2, result);
+
+    operand1 = result;  // Use the result as the new operand1
+    operand2 = 'd';
+    result = getTemp(); // Get a new temporary variable
+
+    // Generate code for the second part of the expression
+    generateCode('*', operand1, operand2, result);
+
+    return 0;
+}
+
+// Function to generate code for an operation
+void generateCode(char op, char operand1, char operand2, char result) {
+    printf("%c = %c %c %c\n", result, operand1, op, operand2);
+}
+
+// Function to get a temporary variable
+char getTemp() {
+    char temp = nextTemp;
+    nextTemp++;
+    return temp;
+}
