@@ -1,0 +1,32 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+[0-9]+            { printf("Numeric Constant: %s\n", yytext); }
+\"([^"\\]|\\.)*\"  { printf("String Literal: %s\n", yytext); }
+
+.                 { } /* Ignore other characters */
+
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <filename.c>\n", argv[0]);
+        return 1;
+    }
+
+    FILE *file = fopen(argv[1], "r");
+    if (!file) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    yyin = file;
+    yylex();
+
+    fclose(file);
+    return 0;
+}
+
