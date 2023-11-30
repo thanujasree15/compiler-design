@@ -4,7 +4,7 @@
 
 #define MAX_IDENTIFIER_LENGTH 30
 
-// Function to check if a given string is a keyword
+
 int isKeyword(char *token) {
     char keywords[][10] = {"if", "else", "while", "for", "int", "float", "char", "return"};
     int i;
@@ -18,7 +18,7 @@ int isKeyword(char *token) {
     return 0; // It's not a keyword
 }
 
-// Function to check if a character is an operator
+
 int isOperator(char ch) {
     char operators[] = "+-*/%=";
     int i;
@@ -32,19 +32,19 @@ int isOperator(char ch) {
     return 0; // It's not an operator
 }
 
-// Function to check if a character is a delimiter (whitespace, tab, newline)
+
 int isDelimiter(char ch) {
     return (ch == ' ' || ch == '\t' || ch == '\n');
 }
 
-// Function to analyze and print tokens
+
 void analyzeTokens(char *input) {
     char token[MAX_IDENTIFIER_LENGTH];
     int i = 0;
     int inComment = 0;
 
     while (input[i] != '\0') {
-        // Check for multi-line comments
+        
         if (input[i] == '/' && input[i + 1] == '*') {
             inComment = 1;
             i += 2;
@@ -58,7 +58,7 @@ void analyzeTokens(char *input) {
             continue;
         }
 
-        // Check for single-line comments
+       
         if (input[i] == '/' && input[i + 1] == '/') {
             while (input[i] != '\n' && input[i] != '\0') {
                 i++;
@@ -66,15 +66,15 @@ void analyzeTokens(char *input) {
             continue;
         }
 
-        // If not in a comment, analyze other tokens
+       
         if (!inComment) {
-            // Ignore whitespace, tabs, and newlines
+           
             if (isDelimiter(input[i])) {
                 i++;
                 continue;
             }
 
-            // Identify and print identifiers
+           
             if (isalpha(input[i]) || input[i] == '_') {
                 int j = 0;
                 while (isalnum(input[i]) || input[i] == '_') {
@@ -89,7 +89,7 @@ void analyzeTokens(char *input) {
                 }
             }
 
-            // Identify and print constants
+            
             else if (isdigit(input[i])) {
                 int j = 0;
                 while (isdigit(input[i])) {
@@ -99,7 +99,7 @@ void analyzeTokens(char *input) {
                 printf("Constant: %s\n", token);
             }
 
-            // Identify and print operators
+           
             else if (isOperator(input[i])) {
                 printf("Operator: %c\n", input[i++]);
             } else {
@@ -116,7 +116,6 @@ int main() {
 
     printf("Enter C code (press Ctrl+D to end input):\n");
 
-    // Read input until EOF (Ctrl+D on UNIX/Linux, Ctrl+Z on Windows)
     while (fgets(input, sizeof(input), stdin) != NULL) {
         analyzeTokens(input);
     }
