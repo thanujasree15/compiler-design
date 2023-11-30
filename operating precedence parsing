@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <math.h>
+
+// Function declarations
+float evalExpression();
+
+// Global variables
+char input[100];
+int position = 0;
+
+int main() {
+    printf("Enter an arithmetic expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove newline character from input
+    for (int i = 0; i < sizeof(input); i++) {
+        if (input[i] == '\n') {
+            input[i] = '\0';
+            break;
+        }
+    }
+
+    // Begin parsing and evaluation
+    float result = evalExpression();
+
+    // Check if the entire input is parsed
+    if (position == sizeof(input) - 1 || input[position] == '\0') {
+        printf("Evaluation successful. Result: %.2f\n", result);
+    } else {
+        printf("Error in parsing.\n");
+    }
+
+    return 0;
+}
+
+float evalExpression() {
+    float value = 0.0;
+    int isNegative = 0;
+
+    // Handle unary minus
+    if (input[position] == '-') {
+        isNegative = 1;
+        position++;
+    }
+
+    // Parse the first term
+    if (isdigit(input[position])) {
+        value = atof(input + position);
+        while (isdigit(input[position]) || input[position] == '.') {
+            position++;
+        }
+    } else if (input[position] == '(') {
+        position++;
+        value = evalExpression();
+        if (input[position] == ')') {
+            position++;
+        } else {
+            printf("Error in parsing.\n");
+            exit(1);
+        }
+    } else {
+        printf("Error in parsing.\n");
+        exit(1);
+    }
+
+    // Apply unary minus
+    if (isNegative) {
+        value = -value;
+    }
+
+    // Parse the remaining expression
+    while (input[position] != '\0') {
+        char op = input[position];
+
+        if (op == '+' || op == '-') {
+            position++;
+            float nextTerm = evalExpression();
+
+            // Apply addition or subtraction
+            if (op == '+') {
+                value += nextTerm;
+            } else {
+                value -= nextTerm;
+            }
+        } else if (op == '*' || op == '/') {
+            position++;
+            float nextFactor = evalExpression();
+
+            // Apply multiplication or division
+            if (op == '*') {
+                value *= nextFactor;
+            } else {
+                if (nextFactor != 0) {
+                    value /= nextFactor;
+                } else {
+                    printf("Error: Division by zero.\n");
+                    exit(1);
+                }
+            }
+        } else if (op == '^') {
+            position++;
+            float exponent = evalExpression();
+
+            // Apply exponentiation
+            value = pow(value, exponent);
+        } else {
+            break;
+        }
+    }
+
+    return value;
+}
